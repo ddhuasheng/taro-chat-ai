@@ -54,8 +54,13 @@
     "@tarojs/runtime": "4.0.0-canary.5",
     "@tarojs/shared": "4.0.0-canary.5",
     "@tarojs/taro": "4.0.0-canary.5",
+    "mini-css-extract-plugin": "^2.9.1",
+    "prism-js": "^1.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-markdown": "^9.0.1",
+    "react-syntax-highlighter": "^15.6.1",
+    "remark-gfm": "^4.0.0",
     "zustand": "^5.0.0"
   },
   "devDependencies": {

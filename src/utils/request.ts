@@ -3,8 +3,8 @@ import Taro from "@tarojs/taro";
 // 根据环境判断url
 const prefix =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:5000"
-    : "http://localhost:5000";
+    ? "http://192.168.1.2:5000/api/v1"
+    : "http://192.168.1.2:5000/api/v1";
 
 //网络请求拦截器
 const interceptor: Taro.interceptor =  <T>(chain: Taro.Chain) => {

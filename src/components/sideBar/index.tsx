@@ -3,8 +3,10 @@ import {
   SubSideNavBar,
   SideNavBarItem,
 } from "@nutui/nutui-react-taro";
-import { sideConfig, type SideConfig } from "./config";
+import { sideConfig, type SideConfig, type sideConfigChildren } from "./config";
 import Taro from "@tarojs/taro";
+import { useMainStore } from "@/store";
+import { useMemo } from "react";
 
 interface SideBarProps {
   visible: boolean;
@@ -12,16 +14,39 @@ interface SideBarProps {
 }
 
 const SideBar = ({ visible, setVisible }: SideBarProps) => {
-  const clickHandle = (item: SideConfig) => {
+  const { setCurrent, records } = useMainStore();
+
+  const config = useMemo(() => {
+    const side = [...sideConfig];
+    side[0].children = records.map((item) => {
+      return {
+        ...item,
+        value: String(item.id),
+        title: item.name,
+      };
+    });
+
+    return side;
+  }, [records]);
+
+  const clickHandle = (
+    item: SideConfig | sideConfigChildren,
+  ) => {
     setVisible(false);
 
     if (item.path) {
+      setCurrent(null);
       Taro.navigateTo({
         url: item.path,
       });
     } else {
       const pages = Taro.getCurrentPages();
       const currentPage = pages[pages.length - 1];
+
+      if ((item as sideConfigChildren).id) {
+        setCurrent(Number(item.value));
+      }
+
       if (currentPage.route !== "pages/index/index") {
         Taro.navigateBack();
       }
@@ -31,9 +56,11 @@ const SideBar = ({ visible, setVisible }: SideBarProps) => {
   const renderSideConfig = (config: typeof sideConfig) => {
     return config.map((item) => {
       return item.children?.length ? (
-        <SubSideNavBar title={item.title} value={item.value}>
-          {renderSideConfig(item.children)}
-        </SubSideNavBar>
+        <SubSideNavBar
+          title={item.title}
+          value={item.value}
+          children={renderSideConfig(item.children)}
+        />
       ) : (
         <SideNavBarItem
           title={item.title}
@@ -54,7 +81,7 @@ const SideBar = ({ visible, setVisible }: SideBarProps) => {
           setVisible(false);
         }}
       >
-        {renderSideConfig(sideConfig)}
+        {renderSideConfig(config)}
       </SideNavBar>
     </>
   );

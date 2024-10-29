@@ -9,13 +9,17 @@ export interface MainStore {
   setCurrent: (current: number | null) => void;
   addRecord: (record: RecordState) => void;
   addHistory: (...historys: RecordHistory[]) => void;
+  setRecordName: (name: string) => void;
+  removeRecord: (id: number) => void;
+  findRecord: (id: number) => RecordState | undefined;
+  findIndexRecord: (id: number) => number
 }
 
 const persistedStore = persist<MainStore>(
   (set, get) => {
 
     const addRecord = (record: RecordState) => set(state => {
-      const newRecords = [...state.records, record];
+      const newRecords = [record, ...state.records];
 
       return {
         ...state,
@@ -26,8 +30,10 @@ const persistedStore = persist<MainStore>(
     const addHistory = (...historys: RecordHistory[]) => set(state => {
       const newRecords = [...state.records]
 
-      const record = newRecords[state.current!].history
-      record.push(...historys)
+      const index = findIndexRecord(state.current!)
+      if (index !== -1) {
+        newRecords[index]?.history.push(...historys)
+      }
 
       return {
         ...state,
@@ -35,12 +41,47 @@ const persistedStore = persist<MainStore>(
       }
     })
 
+    const setRecordName = (name: string) => set(state => {
+      const newRecords = [...state.records]
+
+      const index = findIndexRecord(state.current!)
+      if (index !== -1) {
+        newRecords[index].name = name
+      }
+
+      return {
+        ...state,
+        records: newRecords,
+      }
+    })
+
+    const removeRecord = (id: number) => set(state => {
+      const newRecords = state.records.filter((item) => item.id !== id)
+
+      return {
+        ...state,
+        records: newRecords,
+      }
+    })
+
+    const findRecord = (id: number) => {
+      return get().records.find((item) => item.id === id)
+    }
+
+    const findIndexRecord = (id: number) => {
+      return get().records.findIndex((item) => item.id === id)
+    }
+
     return {
       current: null,
       records: [],
       setCurrent: (current) => set({ current }),
       addRecord,
-      addHistory
+      removeRecord,
+      findRecord,
+      findIndexRecord,
+      addHistory,
+      setRecordName
     };
   },
   {

@@ -2,7 +2,11 @@ export interface SideConfig {
   title: string,
   value: string,
   path?: string,
-  children?: SideConfig[]
+  children?: sideConfigChildren[]
+}
+
+export interface sideConfigChildren extends SideConfig {
+  id: number
 }
 
 export const sideConfig: SideConfig[] = [
