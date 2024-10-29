@@ -4,8 +4,10 @@ import { asyncLocalStorage } from "../index";
 import type { RecordState, RecordHistory } from '@/types'
 
 export interface MainStore {
+  changeNum: number,
   current: number | null;
-  records: RecordState[]
+  records: RecordState[];
+  setChangeNum: (changeNum: number) => void;
   setCurrent: (current: number | null) => void;
   addRecord: (record: RecordState) => void;
   addHistory: (...historys: RecordHistory[]) => void;
@@ -73,6 +75,7 @@ const persistedStore = persist<MainStore>(
     }
 
     return {
+      changeNum: 0, // 修改次数
       current: null,
       records: [],
       setCurrent: (current) => set({ current }),
@@ -81,7 +84,8 @@ const persistedStore = persist<MainStore>(
       findRecord,
       findIndexRecord,
       addHistory,
-      setRecordName
+      setRecordName,
+      setChangeNum: (num: number) => set({ changeNum: num }),
     };
   },
   {

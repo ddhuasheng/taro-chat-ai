@@ -10,7 +10,7 @@ import { useMainStore, useOtherStore } from '@/store'
 
 function TextInput() {
   const [value, setValue] = useState<string>("");
-  const { setCurrent, current, addRecord, addHistory } = useMainStore()
+  const { setCurrent, current, addRecord, addHistory, setChangeNum, changeNum } = useMainStore()
   const { files } = useOtherStore()
   const { currentRecord } = useContainer()
 
@@ -31,16 +31,17 @@ function TextInput() {
     } else {
       addHistory(userMessage)
     }
+    setChangeNum(changeNum + 1)
 
     setValue("")
     chatServices.chat({
       id: currentRecord.id,
-      history: currentRecord.history,
+      history: [...currentRecord.history,userMessage],
     }).then(res => {
       console.log(res, 'chat')
 
       addHistory(Message[RoleEnum.ROLE_ASSISTANT](res.data.content))
-
+      setChangeNum(changeNum + 1)
     })
   }
 

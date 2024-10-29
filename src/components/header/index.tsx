@@ -60,7 +60,7 @@ function Header() {
           </View>
         </View>
         <View className={styles.name} onClick={() => clickHandle()}>
-          <Ellipsis content={currentRecord.name} direction="end" />
+          <Ellipsis style={{width: "100%"}} content={currentRecord.name} direction="end" />
         </View>
         <View className={styles.favorite}>
           {isFavorite ? (

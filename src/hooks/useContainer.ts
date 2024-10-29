@@ -4,7 +4,7 @@ import { Message } from "@/utils";
 import { RoleEnum } from "@/enums";
 
 export const useContainer = () => {
-  const { current, records, findRecord } = useMainStore();
+  const { current, records, findRecord, changeNum } = useMainStore();
 
   const { findFavorite, favoriteList } = useFavoriteStore();
 
@@ -19,7 +19,7 @@ export const useContainer = () => {
     }
 
     return findRecord(current)!;
-  }, [current, records]);
+  }, [current, records, changeNum]);
 
   const isFavorite = useMemo(() => {
     return !!findFavorite(currentRecord.id);
