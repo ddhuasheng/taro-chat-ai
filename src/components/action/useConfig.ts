@@ -3,7 +3,7 @@ import { useContainer } from "@/hooks";
 import { useMainStore, useFavoriteStore } from "@/store";
 import { createElement } from "react";
 
-export const useConfig = () => {
+export const useConfig = (isFavoriteAction?:boolean) => {
   const { currentRecord, isFavorite } = useContainer();
   const { addFavorite, removeFavorite } = useFavoriteStore();
   const { setRecordName, removeRecord } = useMainStore();
@@ -66,12 +66,17 @@ export const useConfig = () => {
   };
 
   const list = [
+    isFavoriteAction ? {
+      name: "对话",
+      value: 'dialog',
+      handler: () => {}
+    } : null,
     {
       name: "重命名",
       value: "rename",
       handler: renameHandler,
     },
-    {
+    isFavoriteAction ? null : {
       name: isFavorite ? "取消收藏" : "收藏",
       value: "favorite",
       handler: favoriteHandler,
@@ -81,7 +86,7 @@ export const useConfig = () => {
       value: "remove",
       handler: removeHandler,
     },
-  ];
+  ].filter(item => item);
 
   return {
     list,

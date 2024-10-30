@@ -1,19 +1,28 @@
-import { ActionSheet  } from "@nutui/nutui-react-taro";
-import { useConfig } from './useConfig'
+import { ActionSheet } from "@nutui/nutui-react-taro";
+import { useConfig } from "./useConfig";
 
 interface Props {
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  onSelect?: (item: any) => void;
+  isFavorite?: boolean;
 }
 
-function Action({ visible, setVisible }: Props) {
+function Action({ visible, setVisible, onSelect, isFavorite }: Props) {
+  const { list } = useConfig(isFavorite);
 
-  const { list } = useConfig()
-
-  const handleSelect = (item: { handler: () => void, value: string, label: string }) => {
-    setVisible(false)
-    item.handler()
-  }
+  const handleSelect = (item: {
+    handler: () => void;
+    value: string;
+    label: string;
+  }) => {
+    setVisible(false);
+    if (onSelect) {
+      onSelect?.(item);
+    } else {
+      item.handler?.();
+    }
+  };
 
   return (
     <ActionSheet
@@ -22,8 +31,7 @@ function Action({ visible, setVisible }: Props) {
       onSelect={handleSelect}
       onCancel={() => setVisible(false)}
       position="bottom"
-    >
-    </ActionSheet>
+    ></ActionSheet>
   );
 }
 

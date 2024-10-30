@@ -22,6 +22,8 @@ function Header() {
   };
 
   const followHandle = (isFollow: boolean) => {
+    if (!currentRecord.name) return
+
     if (isFollow) {
       addFavorite(currentRecord);
       Toast.show("favorite", {
@@ -60,7 +62,11 @@ function Header() {
           </View>
         </View>
         <View className={styles.name} onClick={() => clickHandle()}>
-          <Ellipsis style={{width: "100%"}} content={currentRecord.name} direction="end" />
+          <Ellipsis
+            style={{ width: "100%" }}
+            content={currentRecord.name}
+            direction="end"
+          />
         </View>
         <View className={styles.favorite}>
           {isFavorite ? (
@@ -77,6 +83,7 @@ function Header() {
       <Dialog id="action" />
       <SideBar visible={visible} setVisible={setVisible} />
       <Action visible={actionVisible} setVisible={setActionVisible} />
+      <Toast id="favorite" />
     </>
   );
 }

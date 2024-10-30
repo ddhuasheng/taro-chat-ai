@@ -8,10 +8,24 @@ export interface FavoriteState {
   addFavorite: (record: RecordState) => void;
   removeFavorite: (id: number) => void;
   findFavorite: (id: number) => RecordState | undefined;
+  setFavoriteName: (id: number, name: string) => void;
 }
 
 const persistedStore = persist<FavoriteState>(
   (set, get) => {
+    const setFavoriteName = (id: number, name: string) => set(state => {
+      const newList = state.favoriteList.map(item => {
+        return {
+          ...item,
+          name: item.id === id ? name : item.name
+        }
+      })
+
+      return {
+        favoriteList: newList
+      }
+    })
+
     return {
       favoriteList: [],
       addFavorite: (record: RecordState) =>
@@ -24,6 +38,7 @@ const persistedStore = persist<FavoriteState>(
         })),
       findFavorite: (id: number) =>
         get().favoriteList.find((item) => item.id === id),
+      setFavoriteName
     };
   },
   {
