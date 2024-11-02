@@ -1,6 +1,6 @@
 import { View, Text } from "@tarojs/components";
 import styles from "./index.module.scss";
-import { Collapse, Input, Loading, Row, Col } from "@nutui/nutui-react-taro";
+import { Collapse, Input, Loading, Row, Col, Checkbox } from "@nutui/nutui-react-taro";
 import { useEffect, useMemo, useState } from "react";
 import { fileServices } from "@/apis";
 import { ArrowDown } from "@nutui/icons-react-taro";
@@ -11,6 +11,7 @@ function File() {
   const [data, setData] = useState<FileListVO[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
+  const [checkedList, setCheckedList] = useState<string[]>([]);
 
   const list = useMemo(() => {
     if (!searchText) return data;
@@ -32,6 +33,21 @@ function File() {
       });
   }, []);
 
+  const onchange = (e: boolean, item: FileListVO) => {
+    if(e) {
+      setCheckedList([...checkedList, item.id]);
+    } else {
+      setCheckedList(checkedList.filter(id => id !== item.id));
+    }
+  }
+
+  const titleRender = (item: FileListVO) => {
+    return <>
+      <Checkbox checked={checkedList.includes(item.id)} onChange={(e) => onchange(e, item)} ></Checkbox>
+      <Text>{item.name}</Text>
+    </>
+  }
+
   return (
     <View className={styles.fileContainer}>
       <Input
@@ -44,10 +60,10 @@ function File() {
       {loading ? (
         <Loading type="spinner" />
       ) : (
-        <Collapse expandIcon={<ArrowDown />}>
+        <Collapse accordion  expandIcon={<ArrowDown />}>
           {list.map((item) => {
             return (
-              <Collapse.Item title={item.name} key={item.id} name={item.id}>
+              <Collapse.Item title={titleRender(item)} key={item.id} name={item.id}>
                 {
                   <Row>
                     <Col span={24}>
@@ -56,7 +72,7 @@ function File() {
                     </Col>
                     <Col span={24}>
                       <Text>文件大小: </Text>
-                      <Text>{item.size}</Text>
+                      <Text>{(item.size / 1024).toFixed(2) + "KB"}</Text>
                     </Col>
                     <Col span={24}>
                       <Text>创建时间:</Text>
