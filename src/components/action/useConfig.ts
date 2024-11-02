@@ -54,7 +54,7 @@ export const useConfig = (isFavoriteAction?:boolean) => {
   const removeHandler = () => {
     Dialog.open("action", {
       title: "提示",
-      content: `确定删除对话'${name}'吗？`,
+      content: `确定删除对话'${currentRecord.name}'吗？`,
       onConfirm: () => {
         removeRecord(currentRecord.id)
         Dialog.close("action");

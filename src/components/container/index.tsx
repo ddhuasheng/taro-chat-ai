@@ -6,9 +6,22 @@ import { useContainer } from "@/hooks";
 import { RecordHistory } from "@/types";
 import { RoleEnum } from "@/enums";
 import MarkDown from "../markdown";
+import { useOtherStore } from "@/store";
+import { Space, Tag } from "@nutui/nutui-react-taro";
 
 function Container() {
   const { currentRecord } = useContainer();
+  const { files } = useOtherStore();
+
+  const fileRender = () => {
+    return (
+      <Space style={{ marginBottom: "12px" }}>
+        {files.map((item) => {
+          return <Tag type="info">{item.fileName}</Tag>;
+        })}
+      </Space>
+    );
+  };
 
   const itemRender = (data: RecordHistory) => {
     const isUser = data.role === RoleEnum.ROLE_USER;
@@ -37,6 +50,7 @@ function Container() {
     <View>
       <Header />
       <ScrollView scrollY className={styles.container}>
+        {!!files.length && fileRender()}
         {currentRecord.history
           .filter((item) => !item.isFile)
           .map((item) => {
