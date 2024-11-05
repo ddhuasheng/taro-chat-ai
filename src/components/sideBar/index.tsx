@@ -5,7 +5,7 @@ import {
 } from "@nutui/nutui-react-taro";
 import { sideConfig, type SideConfig, type sideConfigChildren } from "./config";
 import Taro from "@tarojs/taro";
-import { useMainStore } from "@/store";
+import { useMainStore, useOtherStore } from "@/store";
 import { useMemo } from "react";
 
 interface SideBarProps {
@@ -15,6 +15,7 @@ interface SideBarProps {
 
 const SideBar = ({ visible, setVisible }: SideBarProps) => {
   const { setCurrent, records } = useMainStore();
+  const { setFiles } = useOtherStore()
 
   const config = useMemo(() => {
     const side = [...sideConfig];
@@ -45,6 +46,7 @@ const SideBar = ({ visible, setVisible }: SideBarProps) => {
 
       if ((item as sideConfigChildren).id) {
         setCurrent(Number(item.value));
+        setFiles([])
       }
 
       if (currentPage.route !== "pages/index/index") {

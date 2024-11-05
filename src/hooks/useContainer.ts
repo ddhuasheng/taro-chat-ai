@@ -18,7 +18,7 @@ export const useContainer = () => {
       };
     }
 
-    return findRecord(current)!;
+    return findRecord(current)! || {};
   }, [current, records, changeNum]);
 
   const isFavorite = useMemo(() => {

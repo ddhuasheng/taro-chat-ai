@@ -1,12 +1,13 @@
 import { Dialog, Input, Toast } from "@nutui/nutui-react-taro";
 import { useContainer } from "@/hooks";
-import { useMainStore, useFavoriteStore } from "@/store";
+import { useMainStore, useFavoriteStore, useOtherStore } from "@/store";
 import { createElement } from "react";
 
 export const useConfig = (isFavoriteAction?:boolean) => {
   const { currentRecord, isFavorite } = useContainer();
   const { addFavorite, removeFavorite } = useFavoriteStore();
-  const { setRecordName, removeRecord } = useMainStore();
+  const { setRecordName, removeRecord, setCurrent, records } = useMainStore();
+  const { setFiles } = useOtherStore()
 
   const renameHandler = () => {
     let name = ''
@@ -57,6 +58,9 @@ export const useConfig = (isFavoriteAction?:boolean) => {
       content: `确定删除对话'${currentRecord.name}'吗？`,
       onConfirm: () => {
         removeRecord(currentRecord.id)
+        setCurrent(records.length === 1 ? null : records[0].id)
+        setFiles([])
+
         Dialog.close("action");
       },
       onCancel: () => {

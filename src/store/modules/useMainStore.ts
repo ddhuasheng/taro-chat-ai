@@ -60,12 +60,6 @@ const persistedStore = persist<MainStore>(
     const removeRecord = (id: number) => set(state => {
       const newRecords = state.records.filter((item) => item.id !== id)
 
-      if (newRecords.length === 0) {
-        state.setCurrent(null)
-      } else {
-        state.setCurrent(newRecords[0].id)
-      }
-
       return {
         ...state,
         records: newRecords,

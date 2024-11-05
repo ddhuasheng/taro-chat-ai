@@ -10,6 +10,7 @@ import {
   Button,
   Space,
   Dialog,
+  Uploader
 } from "@nutui/nutui-react-taro";
 import { useEffect, useMemo, useState } from "react";
 import { fileServices } from "@/apis";
@@ -90,13 +91,11 @@ function File() {
     });
   };
 
-  const chatHandle = (item: FileListVO) => {
-    setFiles([
-      {
-        fileId: item.id,
-        fileName: item.name,
-      },
-    ]);
+  const chatHandle = (items: FileListVO[]) => {
+    setFiles(items.map(item => ({
+      fileId: item.id,
+      fileName: item.name,
+    })));
 
     const id = Date.now();
     addRecord({
@@ -110,6 +109,15 @@ function File() {
     Taro.navigateBack();
   };
 
+  const mulChatHandle = () => {
+    if (!checkedList.length) return
+
+    const items = data.filter(item => checkedList.includes(item.id))
+    chatHandle(items)
+  }
+
+  const uploadHandle = () => {}
+
   return (
     <View className={styles.fileContainer}>
       <Input
@@ -119,6 +127,10 @@ function File() {
         placeholder="请输入文件名"
         clearable={true}
       />
+      <Space justify="end">
+        <Button onClick={() => uploadHandle()}>上传文件</Button>
+        <Button type="primary" onClick={() => mulChatHandle()}>多文件对话</Button>
+      </Space>
       {loading ? (
         <Loading type="spinner" />
       ) : (
@@ -151,7 +163,7 @@ function File() {
                     <Col span={24}>
                       <Space justify="end">
                         <Button onClick={() => removeHandle(item)}>删除</Button>
-                        <Button type="primary" onClick={() => chatHandle(item)}>
+                        <Button type="primary" onClick={() => chatHandle([item])}>
                           对话
                         </Button>
                       </Space>
