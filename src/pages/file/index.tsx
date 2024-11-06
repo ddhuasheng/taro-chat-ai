@@ -116,8 +116,6 @@ function File() {
     chatHandle(items)
   }
 
-  const uploadHandle = () => {}
-
   return (
     <View className={styles.fileContainer}>
       <Input
@@ -128,7 +126,9 @@ function File() {
         clearable={true}
       />
       <Space justify="end">
-        <Button onClick={() => uploadHandle()}>上传文件</Button>
+        <Uploader url={"http://192.168.1.2:5000/api/v1/file/upload"} multiple name="file" onSuccess={getFileList}>
+          <Button>上传文件</Button>
+        </Uploader>
         <Button type="primary" onClick={() => mulChatHandle()}>多文件对话</Button>
       </Space>
       {loading ? (
